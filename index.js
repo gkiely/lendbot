@@ -8,7 +8,6 @@ var dateTime   = new require('date-time');
 var cors       = require('cors');
 var bodyParser = require('body-parser');
 var express    = require('express');
-// var moment     = require('moment');
 var pgp        = require('pg-promise')();
 var publicIp   = require('public-ip');
 var uuid       = require('uuid');

@@ -1,6 +1,5 @@
 var 
     babel         = require('gulp-babel'),
-    // cache         = require('gulp-cached'),
     config        = require('./gulp/gulp-config.js'),
     fileInclude   = require('gulp-file-include'),
     gulp          = require('gulp'),
@@ -8,16 +7,12 @@ var
     prefix        = require('gulp-autoprefixer'),
     eslint        = require('gulp-eslint'),
     filelog       = require('gulp-filelog'),
-    // react         = require('gulp-react'),
-    // remember      = require('gulp-remember'),
-    // rollup        = require('rollup-stream'),
     sass          = require('gulp-sass'),
     sourcemaps    = require('gulp-sourcemaps'),
-    // gutil         = require('gulp-util'),
     path          = require('path'),
     webserver     = require('gulp-webserver'),
-    // webpack       = require('webpack'),
     webpackStream = require('webpack-stream'),
+
     //Build only
     extend        = require('extend'),
     gulpif        = require('gulp-if'),
@@ -28,8 +23,6 @@ var
     uglify        = function(){},
     yargs         = require('yargs'),
     bulkSass      = require('gulp-sass-bulk-import');
-    // concat        = require('gulp-concat'),
-    // eslint        = require('gulp-eslint'),
 
 
 var prod = yargs.argv.prod;
@@ -66,20 +59,6 @@ gulp.task('server', function(){
     node-inspector --preload false`
   ]));
 
-  //=== Start postgres
-  var isWin = /^win/.test(process.platform);
-  if(isWin){
-    // @todo: get windows version working with config
-    // http://www.postgresql.org/docs/9.4/static/app-pg-ctl.html
-    stream.pipe(shell([
-      "%PROGRAMFILES%\PostgreSQL\9.5\bin\pg_ctl.exe -start"
-    ]));
-  }
-  else{
-    stream.pipe(shell([
-      'open -a Postgres'
-    ]));
-  }
 });
 
 
@@ -117,20 +96,6 @@ gulp.task('js', ['lint:js'], function(cb){
     cb();
     livereload.changed(config.js.dist + '/bundle.js');
   });
-});
-
-
-gulp.task('js:old', function(cb){
-  return gulp.src(config.js.entry)
-  // .pipe(cache('scripts'))
-  // babel task here
-  // .pipe(remember('scripts'))
-  .pipe(
-    webpackStream(wpConfig)
-    // .on('error', handleError)
-  )
-  .pipe(gulp.dest(config.js.dist))
-  .pipe(livereload())
 });
 
 
@@ -200,9 +165,4 @@ gulp.task('watch', function(){
 /*===========================
 =            CLI            =
 ===========================*/
-if(prod){
-  gulp.task('default', ['html', 'js']);
-}
-else{
-  gulp.task('default', ['server', 'watch', 'js', 'html']);  
-}
+gulp.task('default', ['html', 'js']);
