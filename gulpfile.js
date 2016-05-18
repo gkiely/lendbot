@@ -1,28 +1,20 @@
 var 
-    babel         = require('gulp-babel'),
-    config        = require('./gulp/gulp-config.js'),
-    fileInclude   = require('gulp-file-include'),
+    // babel         = require('gulp-babel'),
+    // config        = require('./gulp/gulp-config.js'),
+    // fileInclude   = require('gulp-file-include'),
     gulp          = require('gulp'),
-    livereload    = require('gulp-livereload'),
-    prefix        = require('gulp-autoprefixer'),
-    eslint        = require('gulp-eslint'),
+    // livereload    = require('gulp-livereload'),
+    // eslint        = require('gulp-eslint'),
     filelog       = require('gulp-filelog'),
-    sass          = require('gulp-sass'),
-    sourcemaps    = require('gulp-sourcemaps'),
+    // sourcemaps    = require('gulp-sourcemaps'),
     path          = require('path'),
     webserver     = require('gulp-webserver'),
-    webpackStream = require('webpack-stream'),
 
     //Build only
-    extend        = require('extend'),
     gulpif        = require('gulp-if'),
-    gutil         = require('gulp-util'),
-    htmlmin       = function(){},
-    minifyCSS     = function(){},
+    // gutil         = require('gulp-util'),
     shell         = require('gulp-shell'),
-    uglify        = function(){},
-    yargs         = require('yargs'),
-    bulkSass      = require('gulp-sass-bulk-import');
+    yargs         = require('yargs');
 
 
 var prod = yargs.argv.prod;
@@ -41,19 +33,20 @@ gulp.task('server', function(){
   var ip = require('get-my-ip')();
   var stream = gulp.src('');
   
+  // /* Localhost */
+  // var client = gulp.src('dist');
+  // client.pipe(webserver());
 
-  //=== Client testing server
-  var client = gulp.src('dist');
-  client.pipe(webserver());
-  if(ip){
-    client.pipe(webserver({
-        host: ip,
-        livereload: true
-    }));
-  }
+  // /* External server */
+  // if(ip){
+  //   client.pipe(webserver({
+  //       host: ip,
+  //       livereload: true
+  //   }));
+  // }
 
 
-  //== nodejs server (client/admin)
+  /* start */
   stream.pipe(shell([
     `nodemon --debug --harmony_default_parameters --ignore src/ --ignore dist/ --ignore test/ & 
     node-inspector --preload false`
@@ -81,22 +74,22 @@ gulp.task('html', function(){
 /*==================================
 =            JavaScript            =
 ==================================*/
-var wpConfig = prod ? require('./gulp/webpack.prod.js') : require('./gulp/webpack.dev.js');
+// var wpConfig = prod ? require('./gulp/webpack.prod.js') : require('./gulp/webpack.dev.js');
 
-wpConfig.output = {
-  path: path.join(__dirname, "dist/js"),
-  filename: "bundle.js"
-};
-wpConfig.entry = './' + config.js.entry;
+// wpConfig.output = {
+//   path: path.join(__dirname, "dist/js"),
+//   filename: "bundle.js"
+// };
+// wpConfig.entry = './' + config.js.entry;
 
-var webpack = require('webpack');
-var compiler = webpack(wpConfig);
-gulp.task('js', ['lint:js'], function(cb){
-  compiler.run(function(err, stats){
-    cb();
-    livereload.changed(config.js.dist + '/bundle.js');
-  });
-});
+// var webpack = require('webpack');
+// var compiler = webpack(wpConfig);
+// gulp.task('js', ['lint:js'], function(cb){
+//   compiler.run(function(err, stats){
+//     cb();
+//     livereload.changed(config.js.dist + '/bundle.js');
+//   });
+// });
 
 
 
@@ -121,24 +114,24 @@ gulp.task('sass', function(){
 /*===============================
 =            Linting            =
 ===============================*/
-var esconfig = require('./gulp/eslintrc.js');
-var eslintPassed;
-gulp.task('lint:js', function () {
-  return gulp.src([path.join(config.js.entry), 'index.js'])
-  // .pipe(gulpif( !prod, newer(path.join(config.copy.dist, 'base/js/') )))
-  .pipe(eslint(esconfig))
-  .pipe(eslint.format())
-  .pipe(eslint.result(function(result){
-    if(result.errorCount > 0){
-      eslintPassed = false;
-    }
-    else{
-      eslintPassed = true;
-    }
-  }))
-  .pipe(eslint.failAfterError())
-  .on('error', handleError)
-});
+// var esconfig = require('./gulp/eslintrc.js');
+// var eslintPassed;
+// gulp.task('lint:js', function () {
+//   return gulp.src([path.join(config.js.entry), 'index.js'])
+//   // .pipe(gulpif( !prod, newer(path.join(config.copy.dist, 'base/js/') )))
+//   .pipe(eslint(esconfig))
+//   .pipe(eslint.format())
+//   .pipe(eslint.result(function(result){
+//     if(result.errorCount > 0){
+//       eslintPassed = false;
+//     }
+//     else{
+//       eslintPassed = true;
+//     }
+//   }))
+//   .pipe(eslint.failAfterError())
+//   .on('error', handleError)
+// });
 
 
 
@@ -165,4 +158,4 @@ gulp.task('watch', function(){
 /*===========================
 =            CLI            =
 ===========================*/
-gulp.task('default', ['html', 'js']);
+gulp.task('default', ['server']);

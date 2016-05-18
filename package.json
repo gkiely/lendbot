@@ -1,0 +1,35 @@
+{
+  "name": "lendbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "moment": "^2.13.0",
+    "node-horseman": "^3.0.1",
+    "phantomjs-prebuilt": "^2.1.7",
+    "zombie": "^4.2.1"
+  },
+  "devDependencies": {
+    "get-my-ip": "0.0.1",
+    "gulp": "^3.9.1",
+    "gulp-filelog": "^0.4.1",
+    "gulp-if": "^2.0.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-webserver": "^0.9.1",
+    "yargs": "^4.7.0"
+  },
+  "scripts": {
+    "preinstall": "npm i -g phantomjs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkiely/lendbot.git"
+  },
+  "author": "gkiely",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gkiely/lendbot/issues"
+  },
+  "homepage": "https://github.com/gkiely/lendbot#readme"
+}
