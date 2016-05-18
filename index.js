@@ -95,7 +95,7 @@ app.get('/read', function(req, res){
  * Comment on post
  */
 app.get('/postcomment', function(req, res){
-  graph.get(pageId + '/feed', {limit: 100}, function(err, fbres){
+  graph.get(pageId + '/feed', {limit: 1}, function(err, fbres){
     var lastPost = fbres.data[0];
 
     // Borrow post
@@ -113,16 +113,17 @@ app.get('/postcomment', function(req, res){
 });
 
 
-app.get('/getcomment', function(req, res){
+app.get(['/getcomment','/getcomment/:index'], function(req, res){
   /* Get last post */
+  var index = req.params.index || 0;
   graph.get(pageId + '/feed', {limit: 1}, function(err, fbres){
     var lastPost = fbres.data[0];
     var id = lastPost.id;
+    graph.get(id + '/comments', function(err, fbres){
+      var comment = fbres.data[index];
 
-    graph.post(id, 'asdf')
-    .post
-    res.send(lastPost);
-
+      handleFbRes(res, err, fbres, comment.message);
+    });
   });
 });
 
