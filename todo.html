@@ -8,16 +8,33 @@
   -Get posts [x]
   -Ability to comment on post [x]
 
-  -Comment on post
+  -Comment on post [x]
     If message contains {borrow}, comment on it [x]
+  -Get previous comments [x]
+    
+  -Delete posts [x]
+
+  -Get user data [x]
+
+  - Respond to last post
+    - gk  > {borrow $10}
+    - Bot > @gkiely has asked to borrow, please type {lend $10} to lend
+    - gk  > {lend $10}
+    - Bot > @gkiely has lent $10 to borrow, @gkiely please confirm by typing {confirm $10}
+    - gk  > {confirm $10}
+    - Bot > @gkiely confirmed that @gkiely lent $10
+
+  - Node scheduler/job that runs
   
-  -Comment on comment
+  - Description
+  - Design
 
 
-
+  
   V2
   - Save date last checked, save to db, throw error if > 100
   - Create smarter/less manual token process
+  - Comment next level down when lender inputs {lend}
 
 
 

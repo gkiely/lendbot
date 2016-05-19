@@ -9,11 +9,53 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var graph = require('fbgraph');
 var moment = require('moment');
-
-
+var Nightmare = require('nightmare');
 /*=====  End of NPM Modules  ======*/
 
 
+
+var show = false;
+var nightmare = new Nightmare({show});
+
+
+
+
+nightmare
+.goto('https://www.facebook.com/groups/1668124723450853')
+.evaluate(function(){
+
+  var _q = function(query, parent = document){
+    return [].slice.call(parent.querySelectorAll(query), 0);
+  };
+
+  var arr = _q('.userContentWrapper');
+
+  arr = arr.filter(function(item, i){
+    return /\s?{\s?borrow:?\s\$?(\d*\.?\d*)}/gi.test(item.textContent);
+  });
+
+  //-- Find username
+  var str = 'Last {borrow} was by: ';
+  arr.filter(function(item, i){
+    var links = _q('.userContentWrapper a[href*=facebook]', item);
+
+    links.map(function(item, i){
+      //-- @todo: write tests to make sure this returns user val
+      str += item.textContent.trim();
+      if(item.textContent){
+        str += ', username is: ';
+        str += item.href.match(/.com\/([\w.]*)/)[1];
+        str += ', id is: ';
+        str += item.dataset.hovercard.match(/\?id=(\d*)/)[1];
+      }
+    });
+  });
+  return str;
+})
+.run(function(err, data){
+  console.log(data);
+})
+.end()
 
 /*=============================
 =            Setup            =
@@ -42,6 +84,18 @@ let handleFbRes = function(res, err, fbres, str){
 
 let getMoment = function(){
   return moment().format('DD/MM/YYYY h:mm:ss a');
+};
+
+let getFbPosts = function(fn, limit = 100){
+  graph.get(pageId + '/feed', {limit}, fn);
+};
+
+let getFbPostsPromise = function(limit = 100){
+  return new Promise(function(resolve, reject){
+    graph.get(pageId + '/feed', {limit}, function(err, fbres){
+      return err ? resolve(fbres) : reject(err);
+    });
+  });
 };
 
 /*=====  End of Helpers  ======*/
@@ -74,6 +128,12 @@ app.get('/extend', function(req, res){
 /**
  * Post
  */
+app.get('/user', function(req, res){
+  graph.get('1668124723450853', function(err, fbres){
+    handleFbRes(res, err, fbres);
+  });
+});
+
 app.get('/post', function(req, res){
   var wallPost = {
     message: "{borrow} " + getMoment()
@@ -92,23 +152,36 @@ app.get('/read', function(req, res){
 
 
 /**
- * Comment on post
+ * Checks last post/comments and responds
+ * regex: https://regex101.com/r/xG7hJ8/1
  */
-app.get('/postcomment', function(req, res){
-  graph.get(pageId + '/feed', {limit: 1}, function(err, fbres){
-    var lastPost = fbres.data[0];
+app.get('/respond', function(req, res){
+  graph.get(pageId + '/feed', {limit: 10}, function(err, fbres){
+    var lastPost = fbres.data[1];
+    var message;
 
     // Borrow post
     // Comment on borrow
-    if(lastPost.message.includes('{borrow}')){
-      // Check existing comments
-      graph.post(lastPost.id + '/comments', {message: '{borrow} detected'}, function(err, fbres){
-        handleFbRes(res, err, fbres);
-      });
+    if(/\s?{\s?borrow:?\s\$?(\d*\.?\d*)}/gi.test(lastPost.message)){
+
+      // Get username
+      //== This might be tricky/require some scraping
+      //== http://stackoverflow.com/questions/23428498/get-username-field-in-facebook-graph-api-2-0
+      
+
+
+      // Get amount
+      // Respond
+      message = "{borrow} detected " + getMoment();
     }
     else{
-      // Other post
+      message = "other comment " + getMoment();
     }
+
+    // graph.post(lastPost.id + '/comments', {message}, function(err, fbres){
+    //   handleFbRes(res, err, fbres);
+    // });
+    res.send(lastPost);
   });
 });
 
@@ -121,9 +194,24 @@ app.get(['/getcomment','/getcomment/:index'], function(req, res){
     var id = lastPost.id;
     graph.get(id + '/comments', function(err, fbres){
       var comment = fbres.data[index];
-
-      handleFbRes(res, err, fbres, comment.message);
+      handleFbRes(res, err, fbres, comment ? comment.message : "");
     });
+  });
+});
+
+app.get('/deleteall', function(req, res){
+  getFbPosts(function(err, fbres){
+
+    var ids = fbres.data.map((item, i) =>{
+      return {
+        method: 'DELETE', 
+        relative_url: item.id
+      }
+    });
+    graph.batch(ids, function(err, fbres){
+      handleFbRes(res, err, fbres, 'success');
+    });
+
   });
 });
 
