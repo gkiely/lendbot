@@ -1,8 +1,13 @@
 <!--
   
-  Todo
-  ====
   
+  Best end goal would be a website.
+  How
+
+  
+
+  Todo
+  ====  
   -Post comment [x]
   -Post to group [x]
   -Get posts [x]
@@ -17,21 +22,66 @@
   -Get user data [x]
 
   - Respond to last post
-    - gk  > {borrow $10}
-    - Bot > @gkiely has asked to borrow, please type {lend $10} to lend
-    - gk  > {lend $10}
-    - Bot > @gkiely has lent $10 to borrow, @gkiely please confirm by typing {confirm $10}
-    - gk  > {confirm $10}
-    - Bot > @gkiely confirmed that @gkiely lent $10
-
-  - Node scheduler/job that runs
+    - gk  > {borrow $10} [x]
+    - Bot > @gkiely has asked to borrow, please type {lend $10} to lend [x]
+    - gk  > {lend $10} [x]
+    - Bot > @gkiely has lent $10 to borrow, @gkiely please confirm by typing {confirm $10} [x]
+    - gk  > {confirm $10} [x]
+    - Bot > @gkiely confirmed that @gkiely lent $10 [x]
+    
+  - Get it working with multiple posts [x]
+    - Make sure getUserdetails works with more than 1 borrow post [x]
   
-  - Description
+  - Pinned post [x]
+
+  - Fix username issue [x]
+
+  - Quick rough version of table
+
+  - Update syntax
+    [borrow $100] I would like to borrow ...
+    To lend please enter [lend $100]
+
+
+
+  
+  - Create a user test
+  - Once you've verified the hypothesis, throw out the mvp.
+    - Get user to borrow $10: I'm going to lend you $10
+    - Lend to a user: he wants $20
+
+    I want to see if first time users can understand the flow.
+    
+    {Borrow: $10} I would like to borrow some money for lunch.
+    {Borrow: $20} I would like to borrow some money for dinner as well.
+  
+    {Borrow: $10} I would like to borrow some money to buy my roommate a present.
+
+  - Update user to show
+
+
+
+  - Test like a mofo
   - Design
+
+
+
+
+
+  BUGS
+  - Anyone can confirm right now.
+  - Do not allow editing
 
 
   
   V2
+  FAQ
+  - Node scheduler/job that runs, or use webhooks
+  https://developers.facebook.com/docs/graph-api/webhooks
+  In the event you need to check with nightshade
+  - Comments update live, posts require a refresh
+
+  - User history
   - Save date last checked, save to db, throw error if > 100
   - Create smarter/less manual token process
   - Comment next level down when lender inputs {lend}

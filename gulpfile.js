@@ -48,7 +48,7 @@ gulp.task('server', function(){
 
   /* start */
   stream.pipe(shell([
-    `nodemon --debug --harmony_default_parameters --ignore src/ --ignore dist/ --ignore test/ & 
+    `nodemon --debug --ignore src/ --ignore dist/ --ignore test/ & 
     node-inspector --preload false`
   ]));
 
